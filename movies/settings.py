@@ -15,7 +15,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+# DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -36,22 +37,14 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "reviews.apps.ReviewsConfig",
     'django_filters',
-    # 'django.contrib.sites',
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # 'dj_rest_auth.registration',
-    # 'dj_rest_auth',
 ]
-# SITE_ID = 1
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES':(
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 5 
-    # 'DEFAULT_FILTER_BACKENDS':('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 SIMPLE_JWT = {
@@ -66,8 +59,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # 'allauth.account.middleware.AccountMiddleware',
-    # "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "movies.urls"
@@ -89,10 +81,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "movies.wsgi.application"
-
-# ACCOUNT_EMAIL_VERIFICATION = 'none'
-# ACCOUNT_AUTHENTICATION_METHOD = 'username'
-# ACCOUNT_EMAIL_REQUIRED=False
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

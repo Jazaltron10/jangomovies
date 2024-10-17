@@ -1,152 +1,146 @@
-# **Movie Review API**
+# Movie Review API (JWT Edition)
 
-## **Project Overview**
-The **Movie Review API** allows users to create, read, update, and delete movie reviews. Users can also view reviews by movie and search/filter reviews by rating. The API is built using Django and Django REST Framework, providing a secure, RESTful API that interacts with a database to store user-generated reviews.
+This project is a **Django REST Framework (DRF)** powered application that allows users to submit, view, update, and delete movie reviews. The API supports token-based authentication using **JSON Web Tokens (JWT)** to ensure secure access, and features paginated responses, filtering capabilities, and an extendable user authentication system.
 
-## **Features**
-- **User Authentication**: Users can register, log in, and manage their profiles.
-- **Review Management**: Authenticated users can create, update, and delete reviews.
-- **Movie Reviews**: Users can view reviews for a specific movie.
-- **Search and Filter**: Search for reviews by movie title or filter by rating.
-- **Pagination**: Supports pagination for large datasets of reviews.
+## Key Features
 
-## **Technologies Used**
-- **Python 3.x**: Main programming language.
-- **Django**: Web framework for handling backend logic.
-- **Django REST Framework (DRF)**: Framework for building RESTful APIs.
-- **PostgreSQL/SQLite**: Database for storing user and review data.
-- **JWT Authentication (Optional)**: Token-based authentication for securing API endpoints.
-- **Heroku/PythonAnywhere**: For deployment.
+- **JWT Authentication**: Provides secure token-based authentication using JWT (JSON Web Tokens).
+- **Review CRUD Operations**: Authenticated users can create, read, update, and delete movie reviews.
+- **Pagination**: Paginated response to manage large sets of reviews efficiently (default 5 per page).
+- **Filtering**: Easily filter reviews based on different fields using `django_filters`.
+- **Security and Best Practices**: Features such as password validators and CSRF protection are enabled to ensure secure operations.
+- **Environment Configurations**: Environment variables (`dotenv`) are used to secure sensitive data like secret keys and database credentials.
 
----
+## Requirements
 
-## **API Endpoints**
+- Python 3.10+
+- Django 5.1
+- PostgreSQL or SQLite3 (for development)
+- Django REST Framework
+- Simple JWT (for token-based authentication)
 
-### **Authentication**
-- **POST** `/api/auth/register/` - Register a new user.
-- **POST** `/api/auth/login/` - Log in a user and get a token (if using JWT).
-- **POST** `/api/auth/logout/` - Log out a user (if using JWT).
+## Getting Started
 
-### **Reviews**
-- **GET** `/api/reviews/` - List all reviews (supports filtering and pagination).
-- **POST** `/api/reviews/` - Create a new review (authenticated users only).
-- **GET** `/api/reviews/<review_id>/` - Retrieve details for a specific review.
-- **PUT/PATCH** `/api/reviews/<review_id>/` - Update a review (authenticated users only).
-- **DELETE** `/api/reviews/<review_id>/` - Delete a review (authenticated users only).
+### 1. Clone the Repository
 
-### **Movies**
-- **GET** `/api/movies/<movie_title>/reviews/` - List all reviews for a specific movie (with sorting and pagination).
-
-### **Filtering & Searching**
-- **GET** `/api/reviews/?movie_title=<title>` - Search reviews by movie title.
-- **GET** `/api/reviews/?rating=<value>` - Filter reviews by rating (e.g., 4-star reviews).
-
----
-
-## **Installation**
-
-### **1. Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/movie-review-api.git
-cd movie-review-api
+git clone https://github.com/your-repo/moviereview-jwt.git
+cd moviereview-jwt
 ```
 
-### **2. Set Up a Virtual Environment**
+### 2. Create a Virtual Environment
+
 ```bash
-python3 -m venv venv
-source venv/bin/activate    # On Windows, use venv\Scripts\activate
+python -m venv env
+source env/bin/activate  # On Windows use `env\Scripts\activate`
 ```
 
-### **3. Install Dependencies**
+### 3. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### **4. Set Up Environment Variables**
-Create a `.env` file in the root directory and add the following:
+### 4. Configure Environment Variables
+
+Create a `.env` file in the root directory and define your sensitive environment variables:
 
 ```bash
-SECRET_KEY=your_django_secret_key
-DEBUG=True  # For development
-DATABASE_URL=your_database_url  # Use SQLite for local dev or PostgreSQL for production
+SECRET_KEY=your-secret-key
+DB_NAME=your-database-name
+DB_USER=your-database-user
+DB_PASSWORD=your-database-password
+DB_HOST=your-database-host
+DB_PORT=your-database-port
 ```
 
-### **5. Apply Migrations**
+> Note: If you want to switch to SQLite for local development, you can use the default settings from the `settings.py` file and skip the database environment variables.
+
+### 5. Apply Migrations
+
 ```bash
 python manage.py migrate
 ```
 
-### **6. Create a Superuser (Optional)**
+### 6. Create a Superuser
+
+To access the Django admin and perform actions as an authenticated user, create a superuser:
+
 ```bash
 python manage.py createsuperuser
 ```
 
-### **7. Run the Development Server**
+### 7. Run the Development Server
+
 ```bash
 python manage.py runserver
 ```
 
-The API will be accessible at `http://127.0.0.1:8000/`.
+Visit `http://127.0.0.1:8000/` to access the application.
 
----
+## JWT Authentication
 
-## **Running Tests**
-To run the tests for the API, use the following command:
+The project uses **JWT** for authenticating users. To obtain a token, send a POST request to the `/auth/` endpoint with your username and password. For example:
 
 ```bash
-python manage.py test
+POST /auth/
+{
+  "username": "yourusername",
+  "password": "yourpassword"
+}
 ```
 
+You will receive an `access` and `refresh` token, which you can use to authenticate API requests.
+
+- Access token: Valid for **5 days**
+- Refresh token: Valid for **10 days**
+
+### Example: Making Authenticated Requests
+
+After obtaining the JWT, include it in your requests as a `Bearer` token in the header:
+
+```bash
+Authorization: Bearer your_access_token
+```
+
+## Endpoints
+
+- `/auth/`: Obtain JWT token (POST)
+- `/api-auth/login/`: DRF browsable API login page
+- `/reviews/`: Movie review operations (GET, POST, PUT, DELETE)
+
+## Security Features
+
+- **JWT Authentication**: Secure token-based authentication using the `rest_framework_simplejwt` package.
+- **Password Validation**: Ensures user passwords meet security standards.
+- **CSRF Protection**: Enabled by default for enhanced security in form submissions.
+- **Whitenoise Middleware**: Used to serve static files securely and efficiently in production environments.
+
+## Deployment
+
+Ensure the following are set for production:
+
+- **DEBUG**: Set to `False` in `settings.py`.
+- **SECRET_KEY**: Set a unique secret key using environment variables.
+- **ALLOWED_HOSTS**: Update this to include your domain or IP address.
+
+## Database Configuration
+
+The project supports both **PostgreSQL** and **SQLite**:
+
+- **SQLite**: Used by default in local development.
+- **PostgreSQL**: For production, you can configure PostgreSQL by updating the `DATABASES` section in `settings.py` and setting up your environment variables for `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, and `DB_PORT`.
+
+## Contributing
+
+Feel free to fork this repository, open issues, and submit pull requests to contribute to the project.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Contact
+
+For any queries or suggestions, please reach out to the project maintainers at `jazaltron.jan@gmail.com`.
+
 ---
-
-## **Deployment**
-### **Deploy to Heroku**
-1. **Install Heroku CLI**: If you haven't installed it yet, follow [this guide](https://devcenter.heroku.com/articles/heroku-cli).
-2. **Create a Heroku App**:
-   ```bash
-   heroku create your-app-name
-   ```
-3. **Set up environment variables** on Heroku:
-   ```bash
-   heroku config:set SECRET_KEY=your_django_secret_key
-   heroku config:set DEBUG=False
-   ```
-4. **Push code to Heroku**:
-   ```bash
-   git push heroku main
-   ```
-
-For more detailed instructions, refer to the [Heroku Deployment Guide](https://devcenter.heroku.com/articles/deploying-python).
-
----
-
-## **Project Report**
-Refer to the project report [here](link-to-your-google-doc).
-
----
-
-## **Future Enhancements**
-- **Third-party API Integration**: Fetch movie details from OMDB or TMDB.
-- **User Likes**: Implement a feature where users can "like" reviews.
-- **Review Comments**: Allow users to comment on each other's reviews.
-
----
-
-## **License**
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-## **Contributing**
-Feel free to submit issues or pull requests if you would like to contribute to this project. For major changes, please open an issue first to discuss what you would like to change.
-
----
-
-## **Contact**
-For any questions or suggestions, feel free to reach out:
-- **Email**: jazaltron.jan@gmail.com
-- **GitHub**: [Jazaltron10](https://github.com/Jazaltron10/movie_review_api)
-
----
-
-This `README.md` file gives a comprehensive overview of your **Movie Review API** project, providing clear instructions and details on how to use the API, set it up, and contribute.
