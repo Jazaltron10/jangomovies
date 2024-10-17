@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -16,7 +17,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Custom User Model
 AUTH_USER_MODEL = "users.User"
@@ -34,7 +35,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "users.apps.UsersConfig",
     "reviews.apps.ReviewsConfig",
-    # 'django_filters',
+    'django_filters',
     # 'django.contrib.sites',
     # 'allauth',
     # 'allauth.account',
@@ -45,13 +46,18 @@ INSTALLED_APPS = [
 # SITE_ID = 1
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': [
-    #     'rest_framework.authentication.TokenAuthentication',  # Use token-based authentication
-    # ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES':(
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 5 
+    # 'DEFAULT_FILTER_BACKENDS':('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
+}
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -157,7 +163,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-
-# Custom User Model 
-AUTH_USER_MODEL = 'users.User'
