@@ -26,10 +26,12 @@ pipu:
 	pip install --upgrade pip
 
 depnd:
-	pip install django mysqlclient python-dotenv black psycopg2
+	pip install django mysqlclient python-dotenv black psycopg2 pillow
 	
 rest:
-	pip install djangorestframework djangorestframework-simplejwt django-filter dj-rest-auth django-allauth requests
+	pip install djangorestframework djangorestframework-simplejwt django-filter dj-rest-auth 
+# rest:
+# 	pip install djangorestframework djangorestframework-simplejwt django-filter dj-rest-auth django-allauth requests
 
 deploy:
 	pip install whitenoise gunicorn
